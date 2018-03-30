@@ -84,6 +84,7 @@ class NetWork(object):
             delta.insert(0, self.weights[l].T.dot(delta[0]) * self.sigmoid_derivative(z[l - 1]))
         for l in range(self.layer_num - 1):
             self.weights[l] -= self.eta / X.shape[1] * delta[l].dot(a[l].T)
+            self.bias[l] -= self.eta * np.mean(delta[l], 1).reshape(-1, 1)
 
     def fit(self, train_data, test_data=None):
         """
