@@ -138,5 +138,5 @@ if __name__ == "__main__":
     """main
     """
     train_data, val_data, test_data = load_data()
-    network = NetWork([784, 128, 10], eta=0.1, min_batch=64, iter_num=100, loss="crossEntropy")
+    network = NetWork([784, 64, 10], eta=0.1, min_batch=64, iter_num=100, loss="crossEntropy")
     network.fit(train_data, test_data)
