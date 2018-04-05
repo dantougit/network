@@ -15,7 +15,12 @@ sys.setdefaultencoding("utf-8")
 
 
 class NetWorkTensorflow(object):
-    def __init__(self, layer, eta=0.3, min_batch=100, iter_num=300, loss="quadratic"):
+    def __init__(self,
+                 layer,
+                 eta=0.3,
+                 min_batch=100,
+                 iter_num=300,
+                 loss="quadratic"):
         """
         :param layer: structure of neural networks
         :param eta: learning rate
@@ -31,9 +36,15 @@ class NetWorkTensorflow(object):
         # It should be noted here, initialization is very important
         # self.weights = [tf.Variable(tf.random_normal([layer[l], layer[l - 1]])) for l in
         #                 range(1, self.layer_num)]
-        self.weights = [tf.Variable(tf.random_normal([layer[l], layer[l - 1]]) / tf.sqrt(1.0 * layer[l - 1])) for l in
-                        range(1, self.layer_num)]
-        self.bias = [tf.Variable(tf.zeros([layer[l], 1])) for l in range(1, self.layer_num)]
+        self.weights = [
+            tf.Variable(
+                tf.random_normal([layer[l], layer[l - 1]]) / tf.sqrt(
+                    1.0 * layer[l - 1])) for l in range(1, self.layer_num)
+        ]
+        self.bias = [
+            tf.Variable(tf.zeros([layer[l], 1]))
+            for l in range(1, self.layer_num)
+        ]
         self.sess = tf.Session()
         self.sess.run(tf.global_variables_initializer())
 
@@ -99,9 +110,15 @@ def load_data():
     f = gzip.open('../data/mnist.pkl.gz', 'rb')
     train_data, val_data, test_data = cPickle.load(f)
     f.close()
-    train_data = [train_data[0], np.array([vectorized_y(i) for i in train_data[1]])]
+    train_data = [
+        train_data[0],
+        np.array([vectorized_y(i) for i in train_data[1]])
+    ]
     val_data = [val_data[0], np.array([vectorized_y(i) for i in val_data[1]])]
-    test_data = [test_data[0], np.array([vectorized_y(i) for i in test_data[1]])]
+    test_data = [
+        test_data[0],
+        np.array([vectorized_y(i) for i in test_data[1]])
+    ]
     return train_data, val_data, test_data
 
 
@@ -109,5 +126,10 @@ if __name__ == "__main__":
     """main
     """
     train_data, val_data, test_data = load_data()
-    network = NetWorkTensorflow([784, 100, 10], eta=0.03, min_batch=64, iter_num=100, loss="crossEntropy")
+    network = NetWorkTensorflow(
+        [784, 100, 10],
+        eta=0.03,
+        min_batch=64,
+        iter_num=100,
+        loss="crossEntropy")
     network.fit(train_data[0], train_data[1], test_data)

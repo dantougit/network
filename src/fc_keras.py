@@ -32,9 +32,15 @@ def load_data():
     f = gzip.open('../data/mnist.pkl.gz', 'rb')
     train_data, val_data, test_data = cPickle.load(f)
     f.close()
-    train_data = [train_data[0], np.array([vectorized_y(i) for i in train_data[1]])]
+    train_data = [
+        train_data[0],
+        np.array([vectorized_y(i) for i in train_data[1]])
+    ]
     val_data = [val_data[0], np.array([vectorized_y(i) for i in val_data[1]])]
-    test_data = [test_data[0], np.array([vectorized_y(i) for i in test_data[1]])]
+    test_data = [
+        test_data[0],
+        np.array([vectorized_y(i) for i in test_data[1]])
+    ]
     return train_data, val_data, test_data
 
 
@@ -43,18 +49,22 @@ if __name__ == "__main__":
     """
     train_data, val_data, test_data = load_data()
 
-    inputs = Input(shape=(784,))
+    inputs = Input(shape=(784, ))
     x = Dense(128, activation='relu')(inputs)
     predictions = Dense(10, activation='softmax')(x)
 
     model = Model(inputs=inputs, outputs=predictions)
-    model.compile(optimizer='rmsprop',
-                  loss='categorical_crossentropy',
-                  metrics=['accuracy'])
-    model.fit(train_data[0], train_data[1],
-              batch_size=64,
-              epochs=10,
-              validation_split=None)
+    model.compile(
+        optimizer='rmsprop',
+        loss='categorical_crossentropy',
+        metrics=['accuracy'])
+    model.fit(
+        train_data[0],
+        train_data[1],
+        batch_size=64,
+        epochs=10,
+        validation_split=None)
 
     classes = model.predict(test_data[0])
-    print 1.0 * np.sum(classes.argmax(1) == test_data[1].argmax(1)) / test_data[1].shape[0]
+    print 1.0 * np.sum(
+        classes.argmax(1) == test_data[1].argmax(1)) / test_data[1].shape[0]

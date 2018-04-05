@@ -14,7 +14,12 @@ sys.setdefaultencoding("utf-8")
 
 
 class NetWork(object):
-    def __init__(self, layer, eta=0.3, min_batch=100, iter_num=300, loss="quadratic"):
+    def __init__(self,
+                 layer,
+                 eta=0.3,
+                 min_batch=100,
+                 iter_num=300,
+                 loss="quadratic"):
         """
         :param layer: structure of neural networks
         :param eta: learning rate
@@ -30,8 +35,11 @@ class NetWork(object):
         # It should be noted here, initialization is very important
         # self.weights = [np.random.normal(0, 1, (layer[l], layer[l - 1])) for l in
         #                 range(1, self.layer_num)]
-        self.weights = [np.random.normal(0, 1, (layer[l], layer[l - 1])) / np.sqrt(layer[l - 1]) for l in
-                        range(1, self.layer_num)]
+        self.weights = [
+            np.random.normal(0, 1,
+                             (layer[l], layer[l - 1])) / np.sqrt(layer[l - 1])
+            for l in range(1, self.layer_num)
+        ]
         self.bias = [np.zeros((layer[l], 1)) for l in range(1, self.layer_num)]
 
     def sigmoid(self, z):
@@ -79,9 +87,12 @@ class NetWork(object):
         :return: the back propagation function
         """
         z, a = self.forward_propagation(X)
-        delta = [self.cost_derivative(a[-1], y) * self.sigmoid_derivative(z[-1])]
+        delta = [
+            self.cost_derivative(a[-1], y) * self.sigmoid_derivative(z[-1])
+        ]
         for l in range(1, self.layer_num - 1)[::-1]:
-            delta.insert(0, self.weights[l].T.dot(delta[0]) * self.sigmoid_derivative(z[l - 1]))
+            delta.insert(0, self.weights[l].T.dot(delta[0]) *
+                         self.sigmoid_derivative(z[l - 1]))
         for l in range(self.layer_num - 1):
             self.weights[l] -= self.eta / X.shape[1] * delta[l].dot(a[l].T)
             self.bias[l] -= self.eta * np.mean(delta[l], 1).reshape(-1, 1)
@@ -99,7 +110,8 @@ class NetWork(object):
                 batch_y = y[k:k + self.min_batch]
                 self.back_propagation(batch_X.T, batch_y.T)
             if test_data:
-                print self.evaluate(X.T, y.T), self.evaluate(test_data[0].T, test_data[1].T)
+                print self.evaluate(X.T, y.T), self.evaluate(
+                    test_data[0].T, test_data[1].T)
 
     def evaluate(self, test_X, test_y):
         """
@@ -108,7 +120,8 @@ class NetWork(object):
         :return: evaluation function
         """
         z, a = self.forward_propagation(test_X)
-        return 1.0 * np.sum(a[-1].argmax(0) == test_y.argmax(0)) / test_X.shape[1]
+        return 1.0 * np.sum(
+            a[-1].argmax(0) == test_y.argmax(0)) / test_X.shape[1]
 
 
 def vectorized_y(i):
@@ -128,9 +141,15 @@ def load_data():
     f = gzip.open('../data/mnist.pkl.gz', 'rb')
     train_data, val_data, test_data = cPickle.load(f)
     f.close()
-    train_data = [train_data[0], np.array([vectorized_y(i) for i in train_data[1]])]
+    train_data = [
+        train_data[0],
+        np.array([vectorized_y(i) for i in train_data[1]])
+    ]
     val_data = [val_data[0], np.array([vectorized_y(i) for i in val_data[1]])]
-    test_data = [test_data[0], np.array([vectorized_y(i) for i in test_data[1]])]
+    test_data = [
+        test_data[0],
+        np.array([vectorized_y(i) for i in test_data[1]])
+    ]
     return train_data, val_data, test_data
 
 
@@ -138,5 +157,10 @@ if __name__ == "__main__":
     """main
     """
     train_data, val_data, test_data = load_data()
-    network = NetWork([784, 64, 10], eta=0.1, min_batch=64, iter_num=100, loss="crossEntropy")
+    network = NetWork(
+        [784, 64, 10],
+        eta=0.1,
+        min_batch=64,
+        iter_num=100,
+        loss="crossEntropy")
     network.fit(train_data, test_data)
